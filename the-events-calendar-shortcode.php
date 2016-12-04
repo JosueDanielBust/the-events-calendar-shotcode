@@ -220,14 +220,26 @@ class Events_Calendar_Shortcode
 							}
 							break;
 
+						case 'dateshort' :
+							if( self::isValid($atts['eventdetails']) ) {
+								$theDateTags = apply_filters( 'ecs_event_list_details', tribe_events_event_schedule_details(), $atts );
+								$domTags = new DOMDocument();
+								$domTags->loadHTML($theDateTags);
+								$theDate = "";
+								foreach ($domTags->getElementsByTagName('span') as $tag) { $theDate = $theDate . $tag->nodeValue; }
+								$partDate = explode(" ", $theDate);
+								$output .= '<div class="leftlabel"><span class="leftdate">' . $partDate[1] . " " . $partDate[0] . '</span></div>';
+							}
+							break;
+
 						case 'venue' :
 							if( self::isValid($atts['venue']) ) {
-								$output .= '<span class="duration venue"><em> at </em>' . apply_filters( 'ecs_event_list_venue', tribe_get_venue(), $atts ) . '</span>';
+								$output .= '<span class="duration venue">' . apply_filters( 'ecs_event_list_venue', tribe_get_venue(), $atts ) . '</span>';
 							}
 							break;
 					}
 				}
-				$output .= '</li>';
+				$output .= '<div class="rightlabel"><a href="' . tribe_get_event_link() . '" class="cro_accent"><i class="icon-chevron-right"></i></a></div></li>';
 			endforeach;
 			$output .= '</ul>';
 
